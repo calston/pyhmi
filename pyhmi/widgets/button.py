@@ -13,7 +13,6 @@ class Button(Widget):
         self.hold = False
 
     def draw(self, surface):
-        print(self.x, self.y, self.w, self.h)
         pygame.draw.rect(surface, pygame.Color(*self.fill),
             (0, 0, self.w, self.h))
 
