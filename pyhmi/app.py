@@ -10,7 +10,7 @@ from .widgets.base import Widget
 
 _WIDGET_CACHE = {}
 
-DEBUG = True
+DEBUG = False
 
 
 class View(Widget):
@@ -147,15 +147,6 @@ class App(object):
         self.init_pygame()
 
         self.load_views()
-
-        #self.serial = serial_asyncio.create_serial_connection(
-        #    self.ev_loop,
-        #    lambda: Output(self),
-        #    '/dev/ttyACM0',
-        #    baudrate=115200
-        #)
-
-        #self.ev_loop.run_until_complete(self.serial)
 
         self.ev_loop.run_until_complete(self.main_loop())
         self.ev_loop.run_forever()
