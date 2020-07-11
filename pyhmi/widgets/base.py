@@ -1,3 +1,4 @@
+import pygame
 
 class Widget(object):
     def __init__(self, app, parent, attributes, actions):
@@ -28,20 +29,38 @@ class Widget(object):
         self.widgets.append(child)
         setattr(self, name, child)
 
+    def get_size(self):
+        return self.w, self.h
+
     def draw_widget(self, surface):
-        self.draw(surface)
+        this_surface = pygame.Surface(self.get_size())
+
+        self.draw(this_surface)
+
         for widget in self.widgets:
-           widget.draw_widget(surface)
+           widget.draw_widget(this_surface)
+
+        surface.blit(this_surface, (self.x, self.y))
 
     def draw(self, surface):
         pass
 
-    def inside(self, x, y):
-        if not hasattr(self, 'w'):
-            return False
+    def get_abspos(self):
+        x = self.x
+        y = self.y
+        if hasattr(self.parent, 'x'):
+            p_x, p_y = self.parent.get_abspos()
+            x += p_x
+            y += p_y
 
-        inx = (x > self.x) and (x < (self.x+self.w))
-        iny = (y > self.y) and (y < (self.y+self.h))
+        return (x, y)
+
+    def inside(self, x, y):
+        x1, y1 = self.get_abspos()
+        w, h = self.get_size()
+
+        inx = (x > x1) and (x < (x1 + w))
+        iny = (y > y1) and (y < (y1 + h))
 
         if inx and iny:
             return True

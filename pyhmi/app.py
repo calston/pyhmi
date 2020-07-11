@@ -19,6 +19,7 @@ class View(Widget):
         self.parent = parent
         self.app = parent
         self.bg = bg
+        self.x, self.y = 0, 0
 
     def getModule(self, widget_type):
         if widget_type in _WIDGET_CACHE:
@@ -31,6 +32,10 @@ class View(Widget):
         _WIDGET_CACHE[widget_type] = cls
 
         return cls
+
+    def get_size(self):
+        self.w, self.h = self.app.surface.get_size()
+        return self.w, self.h
 
     def load_widgets(self, parent, widgets):
         for widget in widgets:
@@ -63,11 +68,7 @@ class App(object):
         pygame.display.init()
         pygame.font.init()
 
-        # pygame.mouse.set_visible(False)
-
-        #'pygame.display.set_mode((320, 240))
         pygame.display.set_mode(flags=pygame.FULLSCREEN | pygame.DOUBLEBUF)
-
 
         self.fonts = {}
 
@@ -77,7 +78,6 @@ class App(object):
 
         if DEBUG:
             print("SDL: ", pygame.get_sdl_version())
-    
 
     def load_font(self, font, size):
         if (font, size) not in self.fonts:
