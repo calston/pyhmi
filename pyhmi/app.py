@@ -33,8 +33,11 @@ class View(Widget):
 
         return cls
 
-    def get_size(self):
-        self.w, self.h = self.app.surface.get_size()
+    def draw(self, surface):
+        surface.fill(pygame.Color(*self.bg))
+
+    def get_size(self, expand=0):
+        self.w, self.h = self.app.get_size()
         return self.w, self.h
 
     def load_widgets(self, parent, widgets):
@@ -79,6 +82,9 @@ class App(object):
         if DEBUG:
             print("SDL: ", pygame.get_sdl_version())
 
+    def get_size(self):
+        return self.surface.get_size()
+
     def load_font(self, font, size):
         if (font, size) not in self.fonts:
             font_path = pygame.font.match_font(font)
@@ -98,13 +104,12 @@ class App(object):
 
     def load_views(self):
         for view, conf_file in self.views.items():
-            config = yaml.load(open(conf_file))
+            config = yaml.load(open(conf_file), Loader=yaml.FullLoader)
 
             view = config.get('view')
             if view:
                 if view['name'] in self.loaded_views:
                     raise Exception('Duplicate View: %s already loaded' % view['name'])
-
                 view_obj = View(self, self.makeColor(*view.get('background', [0, 0, 0])))
                 view_obj.load_widgets(view_obj, view.get('widgets', []))
 

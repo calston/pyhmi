@@ -9,7 +9,7 @@ class Text(Widget):
         if 'color' not in self.attributes:
             self.color = (255, 255, 255)
 
-    def get_size(self):
+    def get_size(self, expand=0):
         return self.font.size(self.text)
 
     def draw(self, surface):

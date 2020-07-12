@@ -23,31 +23,51 @@ class Widget(object):
                 raise Exception("Unable to resolve %s=%s" % (action, value))
 
         if 'font' in attributes:
+            if 'color' in self.font:
+                self.font_color = self.font['color']
+            else:
+                self.font_color = (255, 255, 255)
+
             self.font = self.app.load_font(self.font['name'], int(self.font['size']))
 
     def addWidget(self, name, child):
         self.widgets.append(child)
         setattr(self, name, child)
 
-    def get_size(self):
-        return self.w, self.h
+    def get_size(self, expand=0):
+        return self.w+expand, self.h+expand
 
     def draw_widget(self, surface):
-        this_surface = pygame.Surface(self.get_size())
+        # surface is 1px bigger to account for 0 base position
+        this_surface = pygame.Surface(self.get_size(1), pygame.SRCALPHA)
 
         self.draw(this_surface)
 
         for widget in self.widgets:
            widget.draw_widget(this_surface)
 
-        surface.blit(this_surface, (self.x, self.y))
+        surface.blit(this_surface, self.get_relpos())
 
     def draw(self, surface):
         pass
 
-    def get_abspos(self):
+    def get_relpos(self):
         x = self.x
         y = self.y
+
+        if x < 0:
+            # Snap from right
+            pw, _ = self.parent.get_size()
+            x += pw
+        if y < 0:
+            # Snap from bottom
+            _, ph = self.parent.get_size()
+            y += ph
+
+        return x, y
+
+    def get_abspos(self):
+        x, y = self.get_relpos()
         if hasattr(self.parent, 'x'):
             p_x, p_y = self.parent.get_abspos()
             x += p_x

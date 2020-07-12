@@ -43,7 +43,7 @@ class SevenSegment(Widget):
         self.construct_surface()
 
     def construct_surface(self):
-        self.digit = pygame.Surface((self.w, self.h))
+        self.digit = pygame.Surface((self.w, self.h), pygame.SRCALPHA)
         
         self.dw = int((self.w / self.digits) - self.padding)
 
