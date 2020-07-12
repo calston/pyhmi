@@ -1,0 +1,45 @@
+---
+view:
+  name: main_screen
+  background: [0, 0, 0]
+  widgets:
+    - name: exit_button
+      type: pyhmi.widgets.Button
+      attributes:
+        text: Exit
+        x: 100
+        y: 100
+        w: 128
+        h: 32
+        font: 
+          name: FreeSans
+          size: 12
+      actions:
+        on_click: exit_click
+
+    - name: text1
+      type: pyhmi.widgets.Text
+      attributes:
+        text: Example App
+        x: 10
+        y: 10
+        font: 
+          name: FreeSans
+          size: 12
+          
+    - name: image1
+      type: pyhmi.widgets.Image
+      attributes:
+        x: 10
+        y: 20
+        filename: example/gvim.png
+
+    - name: sevenseg
+      type: pyhmi.widgets.indicators.SevenSegment
+      attributes:
+        value: 1234
+        x: 10
+        y: 50
+        w: 128
+        h: 48
+        digits: 4
