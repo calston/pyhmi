@@ -4,7 +4,7 @@ from .base import Widget
 
 class Group(Widget):
     def draw(self, surface):
-        text = self.font.render(self.text, False, pygame.Color(*self.font_color))
+        text = self.font.render(self.text, self.app.antialias, pygame.Color(*self.font_color))
 
         tw, th = self.font.size(self.text)
         w, h = self.get_size()

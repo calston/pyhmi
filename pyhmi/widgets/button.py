@@ -20,13 +20,14 @@ class Button(Widget):
         pygame.draw.rect(surface, pygame.Color(255, 255,255),
             (0, 0, w, h), 2)
 
-        text = self.font.render(self.text, False, pygame.Color(255, 255,255))
+        text = self.font.render(self.text, self.app.antialias,
+                                pygame.Color(*self.font_color))
 
         tw, th = self.font.size(self.text)
 
         surface.blit(text, ((w/2) - (tw/2), (h/2) - (th/2)))
 
-    def getEvent(self, event):
+    def getMouseEvent(self, event):
         if event.type is MOUSEBUTTONDOWN:
             self.hold = True
 

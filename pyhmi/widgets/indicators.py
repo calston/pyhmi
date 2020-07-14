@@ -141,3 +141,22 @@ class SevenSegment(Widget):
         if self.digit:
             surface.blit(self.digit, (0, 0))
             surface.blit(self.lightSegments(), (0, 0))
+
+class ProgressBar(Widget):
+    def __init__(self, *a, **kw):
+        Widget.__init__(self, *a, **kw)
+        if not hasattr(self, 'color'):
+            self.color = (0, 0, 255)
+        if not hasattr(self, 'value'):
+            self.value = 50
+        if not hasattr(self, 'max_value'):
+            self.max_value = 100
+
+    def draw(self, surface):
+        w, h = self.get_size()
+        pygame.draw.rect(surface, pygame.Color(255, 255, 255), (0, 0, w, h), 1)
+
+        v = (self.value/self.max_value) * (w - 4)
+
+        pygame.draw.rect(surface, pygame.Color(*self.color), (2, 2, v, h-4))
+

@@ -20,12 +20,46 @@ view:
     - name: text1
       type: pyhmi.widgets.Text
       attributes:
-        text: Example App
+        text: "\uf739 Example App"
         x: 10
         y: 10
         font: 
+          name: example/fonts/Cousine Regular Nerd Font Complete.ttf
+          size: 14
+
+    - name: group2
+      type: pyhmi.widgets.Group
+      attributes:
+        text: Other things
+        x: 210
+        y: 32
+        w: 192
+        h: 192
+        font:
           name: FreeSans
           size: 12
+      widgets:
+        - name: val1
+          type: pyhmi.widgets.SelectablePrecisionValue
+          attributes:
+            x: 10
+            y: 16
+            format: "%07.2f K"
+            font:
+              name: example/fonts/Cousine Regular Nerd Font Complete.ttf
+              size: 32
+              color: [0, 254, 0]
+
+        - name: prog1
+          type: pyhmi.widgets.indicators.ProgressBar
+          attributes:
+            x: 10
+            y: 48
+            w: 128
+            h: 32
+            value: 25
+            max_value: 100
+            color: [128, 128, 255]
 
     - name: group1
       type: pyhmi.widgets.Group

@@ -87,5 +87,24 @@ class Widget(object):
         else:
             return False
 
-    def getEvent(self, event):
+    def getMouseEvent(self, event):
         pass
+
+    def getKeyEvent(self, event):
+        pass
+
+    def sendEvent(self, event):
+        if event.type in [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN]:
+            x, y = event.pos
+            if self.inside(x, y):
+                self.app.selected = self
+                self.getMouseEvent(event)
+
+            for widget in self.widgets:
+                if widget.inside(x, y):
+                    widget.sendEvent(event)
+
+        elif event.type in [pygame.KEYUP, pygame.KEYDOWN]:
+            if self.app.selected is not None:
+                self.app.selected.getKeyEvent(event)
+

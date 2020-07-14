@@ -51,13 +51,6 @@ class View(Widget):
                 # has children
                 self.load_widgets(instance, widget['widgets'])
 
-    def sendEvent(self, event):
-        if event.type in [MOUSEBUTTONUP, MOUSEBUTTONDOWN]:
-            x, y = event.pos
-            for widget in self.widgets:
-                if widget.inside(x, y):
-                    widget.getEvent(event)
-
 
 class App(object):
     def __init__(self):
@@ -66,6 +59,9 @@ class App(object):
         self.loaded_views = []
         self.view_objects = []
         self.active_view = None
+
+        self.antialias = True
+        self.selected = None
 
     def init_pygame(self):
         pygame.display.init()
@@ -92,6 +88,9 @@ class App(object):
                 if DEBUG:
                     print("Font loaded (%s, %s): %s" % (font, size, font_path))
                 self.fonts[(font, size)] = pygame.font.Font(font_path, size)
+                return self.fonts[(font, size)]
+            elif os.path.exists(font):
+                self.fonts[(font, size)] = pygame.font.Font(font, size)
                 return self.fonts[(font, size)]
             elif DEBUG:
                 print("Font not found (%s, %s): %s" % (font, size, font_path))
