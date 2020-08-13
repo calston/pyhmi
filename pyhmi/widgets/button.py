@@ -8,7 +8,7 @@ class Button(Widget):
         Widget.__init__(self, *a, **kw)
 
         if 'fill' not in self.attributes:
-            self.fill = pygame.Color(32, 32, 32)
+            self.fill = (32, 32, 32)
 
         self.hold = False
 

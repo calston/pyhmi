@@ -147,11 +147,15 @@ class App(object):
     def stop(self):
         self.running = False
 
+    def on_start(self):
+        pass
+
     def run(self):
         self.init_pygame()
 
         self.load_views()
 
+        self.on_start()
         self.ev_loop.run_until_complete(self.main_loop())
         self.ev_loop.run_forever()
 

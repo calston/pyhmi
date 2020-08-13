@@ -101,8 +101,10 @@ class SelectablePrecisionValue(Widget):
         if event.type is pygame.KEYDOWN:
             if event.key == 273:
                 self.inc_digit()
+                self.on_change(self)
             elif event.key == 274:
                 self.dec_digit()
+                self.on_change(self)
             elif event.key == 275:
                 if self.selected_digit < (len(self.bounds)-1):
                     self.selected_digit += 1
@@ -116,6 +118,7 @@ class SelectablePrecisionValue(Widget):
                 if self.selected_digit < (len(self.bounds)-1):
                     self.selected_digit += 1
                 self.app.request_update = True
+                self.on_change(self)
 
     def getMouseEvent(self, event):
         if event.type is pygame.MOUSEBUTTONDOWN:
@@ -141,6 +144,8 @@ class SelectablePrecisionValue(Widget):
 
             elif (event.button == 4) and (self.selected_digit >= 0):
                 self.inc_digit()
+                self.on_change(self)
 
             elif (event.button == 5) and (self.selected_digit >= 0):
                 self.dec_digit()
+                self.on_change(self)

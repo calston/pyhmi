@@ -13,13 +13,15 @@ class Widget(object):
         for action, value in actions.items():
             try:
                 if value.startswith('self.'):
-                    setattr(self, action, getattr(self.app, value))
+                    setattr(self, action, getattr(self.app, value[5:]))
                 elif hasattr(self.app, value):
                     setattr(self, action, getattr(self.app, value))
                 else:
                     module_path, method_name = value.rsplit('.', 1)
                     method  = getattr(importlib.import_module(module_path), method_name)
+                    setattr(self, action, method)
             except Exception as e:
+                print(e)
                 raise Exception("Unable to resolve %s=%s" % (action, value))
 
         if 'font' in attributes:
