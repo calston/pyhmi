@@ -3,6 +3,15 @@ import pygame
 from .base import Widget
 
 class Group(Widget):
+    def __init__(self, *a, **kw):
+        Widget.__init__(self, *a, **kw)
+
+        if 'fill' not in self.attributes:
+            self.fill = (32, 32, 32)
+
+        if 'border' not in self.attributes:
+            self.border = (255, 255, 255)
+
     def draw(self, surface):
         text = self.font.render(self.text, self.app.antialias, pygame.Color(*self.font_color))
 
@@ -11,7 +20,8 @@ class Group(Widget):
         
         margin = self.attributes.get('margin', th//2)
 
-        color = pygame.Color(*self.attributes.get('color', (255, 255, 255)))
+        color = pygame.Color(*self.border)
+        pygame.draw.rect(surface, pygame.Color(*self.fill), (0, 0, w, h))
 
         pygame.draw.lines(surface, color, False, (
             (margin, th//2),

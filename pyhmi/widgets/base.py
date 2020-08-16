@@ -9,7 +9,7 @@ class Widget(object):
         self.actions = actions
         for attribute, value in attributes.items():
             setattr(self, attribute, value)
-
+        
         for action, value in actions.items():
             try:
                 if value.startswith('self.'):
@@ -24,6 +24,9 @@ class Widget(object):
                 print(e)
                 raise Exception("Unable to resolve %s=%s" % (action, value))
 
+        if 'show' not in attributes:
+            self.show = True
+
         if 'font' in attributes:
             if 'color' in self.font:
                 self.font_color = self.font['color']
@@ -31,13 +34,34 @@ class Widget(object):
                 self.font_color = (255, 255, 255)
 
             self.font = self.app.load_font(self.font['name'], int(self.font['size']))
+        else:
+            self.font = self.parent.font
+            self.font_color = self.parent.font_color
+
+        if 'w' not in attributes:
+            self.w = 0
+        if 'h' not in attributes:
+            self.h = 0
 
     def addWidget(self, name, child):
         self.widgets.append(child)
         setattr(self, name, child)
 
     def get_size(self, expand=0):
-        return self.w+expand, self.h+expand
+        w = self.w
+        h = self.h
+
+        if w <= 0:
+            x, _ = self.get_relpos()
+            pw, _ = self.parent.get_size()
+            w = (w + pw) - x
+
+        if h <= 0:
+            _, y = self.get_relpos()
+            _, ph = self.parent.get_size()
+            h = (h + ph) - y
+       
+        return w+expand, h+expand
 
     def draw_widget(self, surface):
         # surface is 1px bigger to account for 0 base position
@@ -46,7 +70,8 @@ class Widget(object):
         self.draw(this_surface)
 
         for widget in self.widgets:
-           widget.draw_widget(this_surface)
+            if widget.show:
+                widget.draw_widget(this_surface)
 
         surface.blit(this_surface, self.get_relpos())
 
@@ -90,10 +115,17 @@ class Widget(object):
             return False
 
     def getMouseEvent(self, event):
-        pass
+        if event.type is pygame.MOUSEBUTTONDOWN:
+            if (event.button == 1) and (hasattr(self, 'on_click')):
+                self.on_click(self)
+            if (event.button == 4) and (hasattr(self, 'on_scroll')):
+                self.on_scroll(self, 1)
+            if (event.button == 5) and (hasattr(self, 'on_scroll')):
+                self.on_scroll(self, -1)
 
     def getKeyEvent(self, event):
-        pass
+        if (event.type is pygame.KEYDOWN) and (hasattr(self, 'on_keydown')):
+            self.on_keydown(self, event.unicode)
 
     def sendEvent(self, event):
         if event.type in [pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN]:
@@ -103,7 +135,7 @@ class Widget(object):
                 self.getMouseEvent(event)
 
             for widget in self.widgets:
-                if widget.inside(x, y):
+                if widget.show and widget.inside(x, y):
                     widget.sendEvent(event)
 
         elif event.type in [pygame.KEYUP, pygame.KEYDOWN]:

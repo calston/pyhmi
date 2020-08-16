@@ -50,8 +50,6 @@ class LineChart(Widget):
         pygame.draw.rect(surface, pygame.Color(*self.border),
                             (0, 0, w, h), 1)
 
-        #pygame.draw.line(surface, pygame.Color(*self.font_color), (x, h-2), (x+w, h-2), 2)
-
         sx = 2
         x_width = w - 64
         y_height = h - 64
@@ -70,11 +68,22 @@ class LineChart(Widget):
             x_delta = x_max - x_min
             y_delta = self.dy_max - self.dy_min
 
+            if (x_delta < 1) or (y_delta < 1):
+                return
+
+            last_rx = None
+            last_ry = None
             for dx, dy in self.data:
                 rx = round(((dx - x_min)/x_delta) * x_width)
                 ry = round(((dy - self.dy_min)/y_delta) * y_height)
-
-                pygame.draw.line(surface, border_c, (32+rx, h-32), (32+rx, h-ry))
+                
+                if last_rx is None:
+                    last_rx = rx
+                    last_ry = ry
+                else:
+                    pygame.draw.line(surface, border_c, (32+last_rx, h-last_ry), (32+rx, h-ry))
+                    last_rx = rx
+                    last_ry = ry
 
     def _getKeyEvent(self, event):
         if event.type is pygame.KEYDOWN:

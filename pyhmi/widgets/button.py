@@ -10,6 +10,9 @@ class Button(Widget):
         if 'fill' not in self.attributes:
             self.fill = (32, 32, 32)
 
+        if 'border' not in self.attributes:
+            self.border = (255, 255, 255)
+
         self.hold = False
 
     def draw(self, surface):
@@ -17,7 +20,7 @@ class Button(Widget):
         pygame.draw.rect(surface, pygame.Color(*self.fill),
             (0, 0, w, h))
 
-        pygame.draw.rect(surface, pygame.Color(255, 255,255),
+        pygame.draw.rect(surface, pygame.Color(*self.border),
             (0, 0, w, h), 2)
 
         text = self.font.render(self.text, self.app.antialias,

@@ -14,12 +14,22 @@ DEBUG = False
 
 
 class View(Widget):
-    def __init__(self, parent, bg):
+    def __init__(self, parent, config):
         self.widgets = []
         self.parent = parent
         self.app = parent
-        self.bg = bg
         self.x, self.y = 0, 0
+        self.show = True
+        if 'default_font' in config:
+            self.font = config['default_font']
+            if 'color' in self.font:
+                self.font_color = self.font['color']
+            else:
+                self.font_color = (255, 255, 255)
+
+            self.font = self.parent.load_font(self.font['name'], int(self.font['size']))
+
+        self.background = config.get('background', [0, 0, 0])
 
     def getModule(self, widget_type):
         if widget_type in _WIDGET_CACHE:
@@ -34,7 +44,7 @@ class View(Widget):
         return cls
 
     def draw(self, surface):
-        surface.fill(pygame.Color(*self.bg))
+        surface.fill(pygame.Color(*self.background))
 
     def get_size(self, expand=0):
         self.w, self.h = self.app.get_size()
@@ -98,9 +108,6 @@ class App(object):
         else:
             return self.fonts[(font, size)]
 
-    def makeColor(self, r, g, b):
-        return pygame.Color(r, g, b)
-
     def load_views(self):
         for view, conf_file in self.views.items():
             config = yaml.load(open(conf_file), Loader=yaml.FullLoader)
@@ -109,7 +116,7 @@ class App(object):
             if view:
                 if view['name'] in self.loaded_views:
                     raise Exception('Duplicate View: %s already loaded' % view['name'])
-                view_obj = View(self, self.makeColor(*view.get('background', [0, 0, 0])))
+                view_obj = View(self, view)
                 view_obj.load_widgets(view_obj, view.get('widgets', []))
 
                 setattr(self, view['name'], view_obj)
